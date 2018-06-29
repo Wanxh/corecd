@@ -15,7 +15,7 @@ docker run -d -it --restart=always \
     -e REDIS_PORT=6379 \
     -e REDIS_PASSWORD=XX \
     --name corecd \
-    lin2798003/corecd:latest
+    lin2798003/corecd:try
 ```
 参数详解:
 * MYSQL_HOST:远程mysql连接地址
