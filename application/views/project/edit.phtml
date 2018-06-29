@@ -1,0 +1,404 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">
+            <div class="text-left col-md-6"><?= $isUpdate ? '项目修改' : '项目申请' ?></div>
+        </h3>
+        <hr>
+        <form action="/project/<?= $isUpdate ? 'doUpdate' : 'doCreate' ?>" id="myForm">
+            <?php if ($isUpdate) : ?>
+                <input type="hidden" name="id" value="<?= $project['id'] ?>">
+            <?php endif ?>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">环境相关</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <!-- 提示 -->
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label" lay-tips="rancher env环境选择">
+                                    <i class="fa fa-info-circle"></i>
+                                    部署环境:
+                                </label>
+                                <div class="col-sm-11">
+                                    <select class="form-control" name="env_id">
+                                        <?php foreach ($envList as $envId => $envName): ?>
+                                            <option
+                                                value="<?= $envId ?>" <?= $project['env_id'] == $envId ? 'selected' : '' ?>><?= $envName ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">部署用途</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                       lay-tips="web外网服务: 支持域名(对应rancher stack为web)<br>web内网服务: 使用rancher内网域名(对应rancher stack为inner)<br>job任务服务: 无域名(对应rancher stack为job)<br>请确保该rancher环境存在这些stack"><i class="fa fa-info-circle"></i>用途选择:
+                                </label>
+                                <div class="col-sm-11">
+                                    <select class="form-control" name="project_use" id="select-use">
+                                        <?php
+                                        foreach ($useList as $key => $value): ?>
+                                            <option
+                                                value="<?= $key ?>" <?= $project['project_use'] == $key ? 'selected' : '' ?>> <?= $value ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel" id="panel-project">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">项目相关</h3>
+                        </div>
+                        <?php if (\Auth\Auth::isAdmin()): ?>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                           lay-tips="分配此项目只有管理员支持此功能"><i class="fa fa-info-circle"></i>分配用户:
+                                    </label>
+                                    <div class="col-sm-11">
+                                        <select multiple style="height: 300px;font-size: 23px;" class="form-control"
+                                                name="uids[]"
+                                                id="uid">
+                                            <?php foreach ($userList as $uid => $username): ?>
+                                                <option
+                                                    value="<?= $uid ?>" <?= is_array($projectUids) && in_array($uid, $projectUids) ? 'selected' : '' ?>><?= $username ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif ?>
+
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目名称:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="必须为英文且全网唯一"
+                                           name="project_name"
+                                           value="<?= $project['project_name'] ?? 'test' ?>">
+                                    <br>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目描述:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="不超过10个字符" name="project_desc"
+                                           value="<?= $project['project_desc'] ?? 'test' ?>">
+                                    <br>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                       lay-tips="主项目git地址"><i class="fa fa-info-circle"></i>主项目地址:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="gitlab项目地址,如:xxx.git"
+                                           name="project_main_address"
+                                           value="<?= $project['project_main_address'] ?? 'git@gitlab.eoffcn.com:ms/demo.git' ?>">
+                                    <br>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">主项目分支:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="如master"
+                                           name="project_main_branch"
+                                           value="<?= $project['project_main_branch'] ?? 'master' ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                       lay-tips="关联的git项目"><i class="fa fa-info-circle"></i>次项目地址:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="(可选)"
+                                           name="project_sub_address" value="<?= $project['project_sub_address'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">次项目分支:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="(可选)"
+                                           name="project_sub_branch"
+                                           value="<?= $project['project_sub_branch'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                       lay-tips="将次项目作为该目录名称存放于主项目中便于进行操作"><i class="fa fa-info-circle"></i>次项目目录:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="(可选)以子文件夹形式存在于主项目中"
+                                           name="project_sub_path"
+                                           value="<?= $project['project_sub_path'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <?php
+                            //添加才有选择节点
+                            if (empty($isUpdate)) :?>
+                                <div class=" form-group">
+                                    <label class="col-sm-1 control-label">节点数量:</label>
+                                    <div class="col-sm-11">
+                                        <select class="form-control" name="batch_size">
+                                            <option value="1" <?= $project['batch_size'] == '1' ? 'selected' : '' ?>>1
+                                            </option>
+                                            <option value="2" <?= $project['batch_size'] == '2' ? 'selected' : '' ?>>2
+                                            </option>
+                                            <option value="3" <?= $project['batch_size'] == '3' ? 'selected' : '' ?>>3
+                                            </option>
+                                            <option value="4" <?= $project['batch_size'] == '4' ? 'selected' : '' ?>>4
+                                            </option>
+                                            <option value="5" <?= $project['batch_size'] == '5' ? 'selected' : '' ?>>5
+                                            </option>
+                                        </select>
+                                        <br>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                            <div class="form-group">
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                       lay-tips="请下载钉钉创建群自定义机器人"><i class="fa fa-info-circle"></i>钉钉机器人:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="请输入" name="ding"
+                                           value="<?= $project['ding'] ?? 'https://oapi.dingtalk.com/robot/send?access_token=d3fa3d0d867838f9c99f5c5710b42eb988f6b9e9e7039144a7b235b855074a66' ?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel" id="panel-web">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">web相关</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                       lay-tips="请将此域名进行DNS解析到你的负载均衡器或者traefik代理"><i class="fa fa-info-circle"></i>关联域名:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="请输入" name="domain"
+                                           id="input-domain"
+                                           value="<?= $project['domain'] ?? 'test.eoffcn.com' ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label style="margin-top: 8px;" class="col-sm-1 control-label"
+                                       lay-tips="微服务路径,例如:/cdn,则test.eoffcn.com/cdn则会请求到"><i
+                                        class="fa fa-info-circle"></i>二级目录:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="请输入" name="domain_second_path"
+                                           id="input-second-path" value="<?= $project['domain_second_path'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">集成配置相关(重要)&nbsp;&nbsp;
+                                <span><a class="btn btn-danger btn-sm" onclick="onSeeCI()">查看集成结构图</a></span>
+                                &nbsp;&nbsp;<span><a class="btn btn-danger btn-sm" onclick="onSeeDocker()">查看可用Docker基础镜像</a></span>
+                                &nbsp;&nbsp<span><a class="btn btn-danger btn-sm"
+                                                    onclick="onSeeRun()">如何运行后台执行脚本</a></span>
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目地址:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="project_ci_address"
+                                           value="<?= $project['project_ci_address'] ?>"
+                                           placeholder="gitlab项目地址">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目分支:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="project_ci_branch"
+                                           value="<?= $project['project_ci_branch'] ?? 'master' ?>"
+                                           placeholder="如master">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目目录:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="project_ci_path"
+                                           value="<?= $project['project_ci_path'] ?? 'devops' ?>"
+                                           placeholder="以子文件夹形式存在于主项目中">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label"
+                                       lay-tips="(当前目录为$WORKSPACE)文件重命名、文件移动、程序编译、js碎片编译组装等,不需要写#!/bin/bash 写shell一行一条"><i class="fa fa-info-circle"></i>集成脚本:
+                                </label>
+                                <div class="col-sm-11">
+                                    <textarea style="height: 150px;" class="form-control"
+                                              name="ci_run"><?= $project['ci_run'] ?></textarea>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label"
+                                       lay-tips="标准Dockerfile内容"><i class="fa fa-info-circle"></i>Dockerfile:
+                                </label>
+                                <div class="col-sm-11">
+                                    <textarea style="height: 150px;" class="form-control" name="ci_dockerfile">
+<?php if ($project['ci_dockerfile']) {
+    echo $project['ci_dockerfile'];
+} else { ?>
+<?php } ?>
+                                    </textarea>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label"
+                                       lay-tips="替代Dockerfile中的CMS活ENTRYPOINT"><i class="fa fa-info-circle"></i>入口脚本:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="ci_run_file"
+                                           value="<?= $project['ci_run_file'] ?>"
+                                           placeholder="如: node /start.js (php程序可不写)">
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">资源控制 (节点部署定向配置)</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label"
+                                       lay-tips="将该服务指定部署到特有标签的节点上"><i class="fa fa-info-circle"></i>节点标签:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="node_label"
+                                           value="<?= $project['node_label'] ?>"
+                                           placeholder="如:eoffcn.nodes或eoffcn.jobs">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label"
+                                       lay-tips="默认为4500MB"><i class="fa fa-info-circle"></i>内存限制:
+                                </label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="node_memory"
+                                           value="<?= $project['node_memory'] ?>"
+                                           placeholder="单位字节">
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel text-center">
+                        <div class="panel-body" style="position:  fixed;bottom: 10px;left:  50%;">
+                            <button type="button" class="btn btn-primary btn-lg" id="confirm">提交审核</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+<script>
+
+    $('#confirm').click(function () {
+        var form = $('#myForm');
+        $.ajax({
+            url: form.attr('action'),
+            data: form.serialize(),
+            dataType: 'json',
+            type: 'post',
+            success: function (data) {
+                showMsgJump(data, '/project')
+            }
+        })
+    });
+
+    $('#check-inner-domain').change(function () {
+        if ($(this).prop('checked')) {
+            $('#input-domain').attr('disabled', true);
+            $('#input-second-path').attr('disabled', true);
+        } else {
+            $('#input-domain').attr('disabled', false);
+            $('#input-second-path').attr('disabled', false);
+        }
+    });
+
+    $('#select-use').change(function () {
+        if ($(this).children('option:selected').val() != 'web') {
+            $('#panel-web').hide();
+            alert('公网IP隐藏');
+        } else {
+            $('#panel-web').show();
+            alert('公网IP启用');
+        }
+    });
+
+    function onSeeCI() {
+        //示范一个公告层
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['1008px', '680px']
+            , shade: 0.8
+            , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            , btn: ['知道了O(∩_∩)O哈哈~']
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , content: '<div><img src="/assets/img/ci.png"></div>'
+            , success: function (layero) {
+            }
+        });
+    }
+
+    function onSeeRun() {
+        //示范一个公告层
+        layer.open({
+            type: 1
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['920px', '610px']
+            , shade: 0.8
+            , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            , btn: ['知道了O(∩_∩)O哈哈~']
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , content: '<div><img src="/assets/img/docker-run.jpg"></div>'
+            , success: function (layero) {
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,190 @@
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">系统参数配置</h3>
+        <div class="row">
+            <form class="col-md-12" id="setting-form" action="/setting/set" method="post">
+                <!-- jenkins config -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h2 class="panel-title">jenkins config</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">地址</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入地址"
+                                       name="jenkins_address"
+                                       value="<?php echo $data['jenkins_address']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">账号</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入账号"
+                                       name="jenkins_username"
+                                       value="<?php echo $data['jenkins_username']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">密码</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入密码"
+                                       name="jenkins_password"
+                                       value="<?php echo $data['jenkins_password']; ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END jenkins config -->
+
+                <!-- rancher config -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">rancher config</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">地址</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入地址"
+                                       name="rancher_address"
+                                       value="<?php echo $data['rancher_address']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">key</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入key" name="rancher_key"
+                                       value="<?php echo $data['rancher_key']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">secret</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入secret"
+                                       name="rancher_secret"
+                                       value="<?php echo $data['rancher_secret']; ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END rancher config -->
+
+                <!-- registry config -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">registry config</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">地址</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入地址" name="registry_address"
+                                       value="<?php echo $data['registry_address']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">账号</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入registry账号" name="registry_username"
+                                       value="<?php echo $data['registry_username']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">密码</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入registry密码" name="registry_password"
+                                       value="<?php echo $data['registry_password']; ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END registry -->
+
+
+                <!-- nodes -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">节点资源限制</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">CPU分数</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="单核为1024份" name="node_cpu_shares"
+                                       value="<?php echo $data['node_cpu_shares']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">内存控制</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="单位:字节" name="node_memory"
+                                       value="<?php echo $data['node_memory']; ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END nodes -->
+
+                <!-- other -->
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">other config</h3>
+                    </div>
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">钉钉</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="请输入地址" name="ding"
+                                       value="<?php echo $data['ding']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">监控频率</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="单位:秒" name="listen_rate"
+                                       value="<?php echo $data['listen_rate']; ?>">
+                                <br>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">监控超时</label>
+                            <div class="col-sm-11">
+                                <input class="form-control" type="text" placeholder="单位:秒" name="listen_expire"
+                                       value="<?php echo $data['listen_expire']; ?>">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END other -->
+
+                <!-- button -->
+                <div class="panel">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <div class="col-sm-11">
+                                    <span class="input-group-btn"><button class="btn btn-primary"
+                                                                          type="button"
+                                                                          onclick="onSave()">保存</button></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END button -->
+
+            </form>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+
+<script src="/assets/js/setting.js"></script>

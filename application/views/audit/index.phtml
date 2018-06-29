@@ -1,0 +1,109 @@
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">
+            <div class="text-left col-md-6">项目审核</div>
+        </h3>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE HOVER -->
+                <div class="panel">
+                    <?php include $this->getScriptPath() . '/search/project.phtml'; ?>
+
+                    <div class="panel-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>项目名称</th>
+                                <th>项目描述</th>
+                                <th>项目域名</th>
+                                <th>环境</th>
+                                <th>申请时间</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php foreach ($list as $v): ?>
+                                <tr data-id="<?= $v['id'] ?>"
+                                    data-name="<?= $v['project_name'] ?>"
+                                    data-project_desc="<?= $v['project_desc'] ?>"
+                                >
+                                    <td><?= $v['project_name'] ?></td>
+                                    <td><?= $v['project_desc'] ?></td>
+                                    <td><?= $v['domain'] ?></td>
+                                    <td><p class="text-primary"><?= $v['env_name'] ?></p></td>
+                                    <td><?= $v['current_time'] ?></td>
+                                    <td>
+                                        <a target="_blank" href="/project/detail?id=<?= $v['id'] ?>">
+                                            <button type="button" class="btn btn-sm btn-primary">详情</button>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-success pass">通过</button>
+                                        <button type="button" class="btn btn-sm btn-danger deny">拒绝</button>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <!-- END TABLE HOVER -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+</div>
+
+
+<script>
+    $(function () {
+        $('.pass').click(function () {
+            var tr = $(this).parent().parent();
+            var id = tr.data('id');
+            var name = tr.data('name');
+            //询问框
+            layer.confirm("确定通过" + "项目：" + name + "？", {
+                btn: ['通过', '取消'],
+                title: false,
+            }, function () {
+                $.ajax({
+                    type: 'post',
+                    data: {id: id},
+                    dataType: 'json',
+                    url: '/audit/pass',
+                    success: function (data) {
+                        showMsgJump(data, '/project/index?id=' + id)
+                    }
+                })
+            }, function () {
+
+            });
+        })
+
+
+        $('.deny').click(function () {
+            var tr = $(this).parent().parent();
+            var id = tr.data('id');
+            var name = tr.data('name');
+            //询问框
+            layer.confirm("确定拒绝" + "项目：" + name + "？", {
+                btn: ['拒绝', '取消'],
+                title: false
+            }, function () {
+                $.ajax({
+                    type: 'post',
+                    data: {id: id},
+                    dataType: 'json',
+                    url: '/audit/deny',
+                    success: function (data) {
+                        showMsgJump(data)
+                    }
+                })
+            }, function () {
+
+            });
+        })
+    })
+
+</script>

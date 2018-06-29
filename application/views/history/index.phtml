@@ -1,0 +1,130 @@
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">
+            <div class="text-left col-md-6">部署历史</div>
+        </h3>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE HOVER -->
+                <div class="panel">
+                    <div class="panel-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>项目名称</th>
+                                <th>项目域名</th>
+                                <th>上线id</th>
+                                <th>上线状态</th>
+                                <th>环境</th>
+                                <th>jenkins日志</th>
+                                <th>rancher日志</th>
+                                <th>时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php use Con\History;
+                            use Myaf\Utils\Arrays;
+
+                            foreach ($pageList['list'] as $v):?>
+                                <tr
+                                        data-id="<?= $v['id'] ?>"
+                                >
+                                    <td><?= Arrays::get($projects, "{$v['pid']}.project_name") ?></td>
+                                    <td><?= Arrays::get($projects, "{$v['pid']}.domain") ?></td>
+                                    <td><?= $v['md5'] ?></td>
+                                    <td>
+                                        <?php if ($v['status'] == History::S_ONLINE_ING): ?>
+                                            <p class="text-primary">上线中...</p>
+                                        <?php elseif ($v['status'] == History::S_ONLINE_SUCCESS): ?>
+                                            <p class="text-success">上线成功</p>
+                                        <?php elseif ($v['status'] == History::S_ONLINE_ERROR): ?>
+                                            <p class="text-danger">上线失败</p>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <p class="text-primary"><?= \Myaf\Utils\Arrays::get($projects, "{$v['pid']}.env_name") ?></p>
+                                    </td>
+                                    <td>
+                                        <?php if ($v['log_jenkins']): ?>
+                                            <?php if ($v['status'] == History::S_ONLINE_ERROR): ?>
+                                                <button type="button" class="btn btn-sm  btn-danger log_jenkins">查看jenkins日志</button>
+                                            <?php elseif ($v['status'] == History::S_ONLINE_ING): ?>
+                                                <button type="button" class="btn btn-sm  btn-info log_jenkins">查看jenkins日志</button>
+                                            <?php else : ?>
+                                                <button type="button" class="btn btn-sm btn-success log_jenkins">查看jenkins日志</button>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+
+                                    </td>
+                                    <td>
+                                        <?php if ($v['log_rancher']): ?>
+                                            <?php if ($v['status'] == History::S_ONLINE_ERROR): ?>
+                                                <button type="button" class="btn   btn-sm  btn-danger log_rancher">查看rancher日志</button>
+                                            <?php elseif ($v['status'] == History::S_ONLINE_ING): ?>
+                                                <button type="button" class="btn   btn-sm  btn-info log_rancher">查看rancher日志</button>
+                                            <?php else : ?>
+                                                <button type="button" class="btn   btn-sm  btn-success log_rancher">查看rancher日志</button>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?= $v['create_time'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 分页  -->
+                    <div class="panel-body navbar-right"><?=$pageList['pageStr']?></div>
+                </div>
+                <!-- END TABLE HOVER -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+</div>
+
+<script>
+    $('.log_jenkins').click(function () {
+        var tr = $(this).parent().parent();
+        var uid = tr.data('id');
+        //示范一个公告层
+        layer.open({
+            type: 2
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['1008px', '680px']
+            , shade: 0.8
+            , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            , btn: ['确定']
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , content: '/history/jenkinsLog?id=' + uid
+            , success: function (layero) {
+            },
+        });
+    })
+
+
+    $('.log_rancher').click(function () {
+        var tr = $(this).parent().parent();
+        var uid = tr.data('id');
+        //示范一个公告层
+        layer.open({
+            type: 2
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['1008px', '680px']
+            , shade: 0.8
+            , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            , btn: ['确定']
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , content: '/history/rancherLog?id=' + uid
+            , success: function (layero) {
+            },
+        });
+    })
+</script>

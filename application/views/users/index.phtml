@@ -1,0 +1,339 @@
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">
+            <div class="text-left col-md-6">用户管理</div>
+            <div class="text-right col-md-6">
+                <button type="button" class="btn btn-primary" id="add">添加用户</button>
+            </div>
+        </h3>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE HOVER -->
+                <div class="panel">
+                    <div class="panel-body">
+                        <?php include $this->getScriptPath() . '/search/users.phtml'; ?>
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>用户id</th>
+                                <th>用户名</th>
+                                <th>备注</th>
+                                <th>手机号</th>
+                                <th>最近一次登录</th>
+                                <th>类别</th>
+                                <th>可见项目</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php use Con\Role;
+
+                            foreach ($pageList['list'] as $v) :?>
+                                <tr
+                                        data-id="<?= $v['id'] ?>"
+                                        data-username="<?= $v['username'] ?>"
+                                        data-comment="<?= $v['comment'] ?>"
+                                        data-mobile="<?= $v['mobile'] ?>"
+                                        data-secret="<?= $v['secret'] ?>"
+                                        data-turl="<?= $v['turl'] ?>"
+                                        data-role="<?= $v['role'] ?>"
+                                >
+                                    <td><?= $v['id'] ?></td>
+                                    <td><?= $v['username'] ?></td>
+                                    <td><?= $v['comment'] ?></td>
+                                    <td><?= $v['mobile'] ?></td>
+                                    <td><?= $v['update_time'] ?></td>
+                                    <td>
+                                        <?php if ($v['role'] == Role::USER_ADMIN): ?>
+                                            <p class="text-success">管理员</p>
+                                        <?php else : ?>
+                                            <p class="text-primary">普通</p>
+                                        <?php endif ?>
+                                    </td>
+                                    <td><?= ($v['role'] == Role::USER_ADMIN) ? '所有' : (int)\Myaf\Utils\Arrays::get($userProjectNum, "{$v['id']}.project_num") ?></td>
+                                    <td>
+                                        <?php if ($v['role'] != Role::USER_ADMIN): ?>
+                                            <a href="/project/userProjects?uid=<?= $v['id'] ?>" target="_blank">
+                                                <button type="button" class="btn btn-sm btn-primary">查看项目</button>
+                                            </a>
+                                        <?php endif; ?>
+                                        <button type="button" class="btn btn-sm btn-primary update">修改</button>
+                                        <button type="button" class="btn btn-sm btn-danger del">删除</button>
+                                        <button type="button" class="btn btn-sm btn-primary qrcode">查看二维码</button>
+                                        <button type="button" class="btn btn-sm btn-primary copyOtp"
+                                                data-clipboard-text="<?= $v['turl'] ?>">复制OTP
+                                        </button>
+
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 分页  -->
+                    <div class="panel-body navbar-right"><?= $pageList['pageStr'] ?></div>
+                </div>
+                <!-- END TABLE HOVER -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+<!-- 新增用户（Modal） -->
+<div class="modal fade" id="addModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">用户新增</h4>
+            </div>
+            <form id="addForm" action="/users/doCreate">
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="username" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="comment" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">手机号</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="mobile" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">OTP密钥</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="secret" value="">
+                            </div>
+                            <button type="button" class="btn btn-danger reset">生成</button>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户类别</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" name="role">
+                                    <option value="0">普通</option>
+                                    <option value="1">管理员</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confrimAdd">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 修改用户信息（Modal） -->
+<div class="modal fade" id="updateModel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">用户修改</h4>
+            </div>
+            <form id="updateForm" action="/users/doUpdate">
+                <input type="hidden" name="id">
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户名</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="username" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">备注</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="comment" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">手机号</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="mobile" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">OTP密钥</label>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" placeholder="请输入" name="secret" value="">
+                            </div>
+                            <button type="button" class="btn btn-danger reset">重置</button>
+                        </div>
+                    </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户类别</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" name="role">
+                                    <option value="0">普通</option>
+                                    <option value="1">管理员</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmUpdate">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/clipboard/clipboard.min.js"></script>
+
+<script>
+    $(function () {
+        $('#add').click(function () {
+            $('#addModel').modal({backdrop: 'static', keyboard: true}).css({});
+        });
+        $('#confrimAdd').click(function () {
+            var form = $('#addForm');
+            loading();
+            $.ajax({
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'json',
+                type: 'post',
+                success: function (data) {
+                    closeLodding();
+                    showMsgJump(data)
+                }
+            })
+        });
+
+        $('.update').click(function () {
+            var tr = $(this).parent().parent();
+
+            var updateForm = $('#updateForm');
+            updateForm.find("input[name='id']").val(tr.data('id'));
+            updateForm.find("input[name='mobile']").val(tr.data('mobile'));
+            updateForm.find("input[name='username']").val(tr.data('username'));
+            updateForm.find("input[name='comment']").val(tr.data('comment'));
+            updateForm.find("input[name='secret']").val(tr.data('secret'));
+            updateForm.find("input[name='secret']").val(tr.data('secret'));
+            updateForm.find(":input[name='role']").val(tr.data('role'));
+            $('#updateModel').modal({backdrop: 'static', keyboard: true}).css({});
+        });
+        $('#confirmUpdate').click(function () {
+            var form = $('#updateForm');
+            loading();
+            $.ajax({
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'json',
+                type: 'post',
+                success: function (data) {
+                    closeLodding();
+                    showMsgJump(data)
+                }
+            })
+        });
+
+
+        $('.reset').click(function () {
+            var keyInput = $(this).parent().find("input[name='secret']");
+            $.ajax({
+                url: '/users/getKey',
+                dataType: 'json',
+                type: 'post',
+                success: function (data) {
+                    if (isDataSuccess(data)) {
+                        keyInput.val(data.data.key)
+                    } else {
+                        showDataError(data);
+                    }
+                }
+            })
+        })
+
+        //复制OTP
+        var clipboard = new Clipboard('.copyOtp');
+        clipboard.on('success', function (e) {
+            layer.msg("复制成功！")
+        });
+        clipboard.on('error', function (e) {
+            layer.msg("复制失败！请手动复制！")
+        });
+
+
+        $('.qrcode').click(function () {
+            var tr = $(this).parent().parent();
+            var uid = tr.data('id');
+            //示范一个公告层
+            layer.open({
+                type: 2
+                , title: false //不显示标题栏
+                , closeBtn: false
+                , area: ['256px', '311px']
+                , shade: 0.8
+                , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+                , btn: ['确定']
+                , btnAlign: 'c'
+                , moveType: 1 //拖拽模式，0或者1
+                , content: '/users/qrcode?id=' + uid
+                , success: function (layero) {
+                },
+            });
+        })
+
+
+        $('.del').click(function () {
+            var tr = $(this).parent().parent();
+            var id = tr.data('id');
+            var name = tr.data('username');
+            //询问框
+            layer.confirm("确定删除" + "用户：" + name + "？", {
+                btn: ['确定', '取消'],
+                title: false
+            }, function () {
+                loading()
+                $.ajax({
+                    type: 'post',
+                    data: {id: id},
+                    dataType: 'json',
+                    url: '/users/del',
+                    success: function (data) {
+                        closeLodding()
+                        showMsgJump(data)
+                    }
+                })
+            }, function () {
+
+            });
+        })
+
+    })
+
+</script>

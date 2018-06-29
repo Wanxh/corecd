@@ -1,0 +1,12 @@
+{
+  "repositories": {
+    "packagist": {
+      "type": "composer",
+      "url": "https://packagist.phpcomposer.com"
+    }
+  },
+  "require": {
+    "cube-group/myaf-validator": "*",
+    "cube-group/myaf-core": "*"
+  }
+}

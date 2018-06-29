@@ -1,0 +1,24 @@
+<div class="page-body">
+    <form class="navbar-form">
+        <div class="input-group">
+            <input type="text" value="<?= $search['username'] ?>" class="form-control" name="username"
+                   placeholder="用户名">
+        </div>
+        <div class="input-group">
+            <input type="text" value="<?= $search['comment'] ?>" class="form-control" name="comment" placeholder="备注">
+        </div>
+        <div class="input-group">
+            <select class="form-control" name="role">
+                <option value="">全部</option>
+                <option value="0" <?= $search['role'] === '0' ? 'selected' : '' ?>>普通用户</option>
+                <option value="1" <?= $search['role'] == '1' ? 'selected' : '' ?>>管理员</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <span class="input-group-btn"><button type="submit" class="btn   btn-sm  btn-primary">搜索</button></span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-btn"><button type="reset" class="btn  btn-sm   btn-primary"  id="reset">清空条件</button></span>
+        </div>
+    </form>
+</div>

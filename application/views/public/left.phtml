@@ -1,0 +1,32 @@
+<!-- LEFT SIDEBAR -->
+<!-- need $controllerName -->
+<div id="sidebar-nav" class="sidebar">
+    <div class="sidebar-scroll">
+        <nav>
+            <ul class="nav left-list">
+                <li><a href="/project/index" class="project"><i class="lnr lnr-home"></i> <span>我的项目</span></a></li>
+                <li><a href="/history/index" class="history"><i class="lnr lnr-chart-bars"></i><span>部署历史</span></a></li>
+                <?php if (\Auth\Auth::isAdmin()): ?>
+                    <li><a href="/audit/index" class="audit"><i class="lnr lnr-pencil"></i> <span>项目审核</span></a></li>
+                    <li><a href="/users/index" class="users"><i class="lnr lnr-user"></i> <span>用户管理</span></a></li>
+                    <li><a href="/log/index" class="log"><i class="lnr lnr-list"></i> <span>操作日志</span></a></li>
+                    <li><a href="/setting/index" class="setting"><i class="lnr lnr-cog"></i> <span>系统设置</span></a></li>
+                <?php endif; ?>
+
+
+            </ul>
+        </nav>
+    </div>
+</div>
+<script>
+    $activeName = "<?php echo $controller;?>";
+    $activeName = $activeName.toLowerCase();
+    $('.left-list a').each(function () {
+        if ($(this).attr('class') == $activeName) {
+            $(this).addClass('active');
+        }
+    });
+</script>
+
+<!-- MAIN -->
+<div class="main">

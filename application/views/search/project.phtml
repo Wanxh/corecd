@@ -1,0 +1,51 @@
+<div class="page-body">
+    <form class="navbar-form">
+        <div class="input-group">
+            <select class="form-control" name="env_id">
+                <option value="">选择环境</option>
+                <?php foreach ($envList as $envId => $envName): ?>
+                    <option value="<?= $envId ?>" <?= $search['env_id'] == $envId ? 'selected' : '' ?>><?= $envName ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+        <div class="input-group">
+            <select class="form-control" name="project_use">
+                <option value="">选择用途</option>
+                <?php foreach ($useList as $use => $name): ?>
+                    <option value="<?= $use ?>" <?= $search['project_use'] == $use ? 'selected' : '' ?>><?= $name ?></option>
+                <?php endforeach ?>
+            </select>
+        </div>
+<!--        <div class="input-group">
+            <select class="form-control" name="uid">
+                <option value="">选择所属用户</option>
+                <?php /*foreach ($userList as $id => $name): */?>
+                    <option value="<?/*= $id */?>" <?/*= $search['uid'] == $id ? 'selected' : '' */?>><?/*= $name */?></option>
+                <?php /*endforeach */?>
+            </select>
+        </div>-->
+        <div class="input-group">
+            <input type="text" value="<?= $search['id'] ?>" class="form-control" name="id" placeholder="项目ID">
+        </div>
+        <div class="input-group">
+            <input type="text" value="<?= $search['project_name'] ?>" class="form-control" name="project_name"
+                   placeholder="项目名称">
+        </div>
+        <div class="input-group">
+            <input type="text" value="<?= $search['domain'] ?>" class="form-control" name="domain" placeholder="域名">
+        </div>
+        <div class="input-group">
+            <input type="text" value="<?= $search['domain_second_path'] ?>" class="form-control" name="domain_second_path" placeholder="二级目录">
+        </div>
+<!--        <div class="input-group">
+            <input type="text" value="<?/*= $search['project_main_address'] */?>" class="form-control"
+                   name="project_main_address" placeholder="git地址">
+        </div>-->
+        <div class="input-group">
+            <span class="input-group-btn"><button type="submit" class="btn   btn-sm  btn-primary">搜索</button></span>
+        </div>
+        <div class="input-group">
+            <span class="input-group-btn"><button type="reset" class="btn  btn-sm   btn-primary"  id="reset">清空条件</button></span>
+        </div>
+    </form>
+</div>

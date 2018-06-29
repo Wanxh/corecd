@@ -1,0 +1,325 @@
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">
+            <div class="text-left col-md-6">项目列表</div>
+            <div class="text-right col-md-6">
+                <a href="/project/create">
+                    <button type="button" class="btn btn-primary">项目申请</button>
+                </a>
+            </div>
+        </h3>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE HOVER -->
+                <div class="panel">
+                    <?php include $this->getScriptPath() . '/search/project.phtml'; ?>
+                    <div class="panel-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>项目名称</th>
+                                <th>域名</th>
+                                <th>二级目录</th>
+<!--                                <th>项目用途</th>-->
+                                <th>环境</th>
+                                <th>节点</th>
+                                <th>上线次数</th>
+<!--                                <th>用户</th>-->
+                                <th>最近上线时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php use Auth\Auth;
+                            use Con\Project;
+
+                            foreach ($pageList['list'] as $v) :?>
+                                <tr >
+                                    <td><?= $v['id'] ?></td>
+                                    <td>
+                                        <?= $v['project_name'] ?>
+                                        <i class="fa fa-info-circle" lay-tips="<?= "{$v['project_desc']}"?>" ></i>
+                                    </td>
+                                    <td><?= $v['domain'] ?></td>
+                                    <td><?= $v['domain_second_path'] ?></td>
+<!--                                    <td>--><?//= \Myaf\Utils\Arrays::get($useList, $v['project_use']) ?><!--</td>-->
+                                    <td><?= $v['env_name'] ?></td>
+                                    <td><?= $v['batch_size'] ?></td>
+                                    <td><?= $v['online_num'] ?></td>
+<!--                                    <td>--><?//= \Myaf\Utils\Arrays::get($userList, $v['uid']) ?><!--</td>-->
+                                    <td><?= $v['use_time'] ?></td>
+                                    <td>
+                                        <?php
+                                        $statuCn = Project::getStatusCn($v['status']);
+                                        if (in_array($v['status'], [Project::S_ONLINE_FAIL, Project::S_WAIT, Project::S_DENIED])): ?>
+                                            <p class="text-danger"><?= $statuCn ?></p>
+                                        <?php elseif ($v['status'] == Project::S_ONLINE_ING): ?>
+                                            <p class="text-primary"><i class="fa fa-spinner fa-spin"></i><?= $statuCn ?>
+                                            </p>
+                                        <?php else : ?>
+                                            <p class="text-success"><?= $statuCn ?></p>
+                                        <?php endif; ?>
+
+                                    </td>
+                                    <td
+                                            data-id="<?= $v['id'] ?>"
+                                            data-uid="<?= $v['uid'] ?>"
+                                            data-name="<?= $v['project_name'] ?>"
+                                            data-project_desc="<?= $v['comment'] ?>"
+                                            data-domain="<?= $v['domain'] ?>"
+                                            data-batch_size="<?= $v['batch_size'] ?>"
+                                    >
+                                        <?php if (in_array($v['status'], [Project::S_ACCESS, Project::S_ONLINE_FAIL, Project::S_ONLINE_OK])): ?>
+                                            <button type="button" class="btn btn-sm btn-primary online">上线</button>
+                                        <?php endif; ?>
+
+                                        <a href="/project/update?id=<?= $v['id'] ?>">
+                                            <button type="button" class="btn btn-sm btn-primary">修改</button>
+                                        </a>
+                                        <a href="/project/clone?id=<?= $v['id'] ?>">
+                                            <button type="button" class="btn btn-sm btn-primary">克隆</button>
+                                        </a>
+                                        <?php if (in_array($v['project_use'], [Project::USE_INNER, Project::USE_WEB])): ?>
+                                            <a href="<?= !empty($v['domain']) && strpos("http://", $v['domain']) !== false ? $v['domain'] : "http://{$v['domain']}" ?><?= $v['domain_second_path'] ?>"
+                                               target="_blank">
+                                                <button type="button" class="btn btn-sm btn-primary">链接</button>
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if (in_array($v['status'], [Project::S_ACCESS, Project::S_ONLINE_OK])): ?>
+                                            <button type="button" class="btn btn-sm btn-info updateBatchSize">节点
+                                            </button>
+                                        <?php endif; ?>
+                                        <?php if (Auth::isAdmin()): ?>
+<!--                                            <button type="button" class="btn btn-sm btn-primary changeOwner">转移</button>-->
+                                            <?php if ($v['status'] == Project::S_WAIT): ?>
+                                                <a href="/audit/index?id=<?= $v['id'] ?>">
+                                                    <button type="button" class="btn btn-sm btn-danger">审核</button>
+                                                </a>
+                                            <?php endif; ?>
+                                            <button type="button" class="btn btn-sm btn-danger delete">删除</button>
+                                        <?php endif; ?>
+
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 分页  -->
+                    <div class="panel-body navbar-right"><?= $pageList['pageStr'] ?></div>
+                </div>
+                <!-- END TABLE HOVER -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 修改节点数量 -->
+<div class="modal fade" id="updateBatchSizeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="updateBatchSizeTitle">修改节点</h4>
+            </div>
+            <form id="updateNodeForm" action="/project/updateBatchSize">
+                <input type="hidden" name="id">
+                <input type="hidden" name="name">
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">节点数量</label>
+                            <div class="col-sm-7">
+                                <select class="form-control" name="batch_size" id="batch_size">
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmUpdateBatchSize">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 转移用户 -->
+<div class="modal fade" id="changeOwnerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="changeOwnerTitle">转移用户</h4>
+            </div>
+            <form id="changeOwnerForm" action="/project/changeOwner">
+                <input type="hidden" name="id">
+                <input type="hidden" name="name">
+                <div class="modal-body">
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">用户</label>
+                            <div class="col-sm-7">
+                                <select multiple style="height: 200px" class="form-control" name="uids">
+                                    <?php foreach ($userList as $uid => $username): ?>
+                                        <option value="<?= $uid ?>"><?= $username ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="confirmChangeOwner">提交</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $('.online').click(function () {
+        var tr = $(this).parent();
+        var id = tr.data('id');
+        var name = tr.data('name');
+        //询问框
+        layer.confirm("确定上线" + "项目：" + "<span class='text-danger'>" + name + "？</span>", {
+            btn: ['确定', '取消'],
+            title: false
+        }, function () {
+            loading();
+            $.ajax({
+                type: 'post',
+                data: {id: id},
+                dataType: 'json',
+                url: '/project/online?id=' + id,
+                success: function (data) {
+                    closeLodding();
+                    showMsgJump(data)
+                }
+            })
+        }, function () {
+
+        });
+    })
+
+    //确认修改节点
+    $('#confirmUpdateBatchSize').click(function () {
+        var form = $('#updateNodeForm');
+        //询问框
+        layer.confirm("确定修改" + "<span class='text-danger'>" + form.find("[name='name']").val() + "</span>节点数量？", {
+            btn: ['确定', '取消'],
+            title: false
+        }, function () {
+            loading();
+            $.ajax({
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'json',
+                type: 'post',
+                success: function (data) {
+                    closeLodding();
+                    showMsgJump(data)
+                }
+            })
+        }, function () {
+
+        });
+
+    });
+
+    //修改节点
+    $('.updateBatchSize').click(function () {
+        var tr = $(this).parent();
+        $('#updateBatchSizeModal').find("[name='id']").val(tr.data('id'));
+        $('#updateBatchSizeModal').find("[name='name']").val(tr.data('name'));
+        $('#updateBatchSizeModal').find("[name='batch_size']").val(tr.data('batch_size'));
+        $('#updateBatchSizeTitle').html("修改" + tr.data('name') + "节点数量");
+        $('#updateBatchSizeModal').modal({backdrop: 'static', keyboard: true}).css({});
+    });
+
+    //转移用户
+    $('.changeOwner').click(function () {
+        var tr = $(this).parent();
+        $('#changeOwnerModal').find("[name='id']").val(tr.data('id'));
+        $('#changeOwnerModal').find("[name='name']").val(tr.data('name'));
+        $('#changeOwnerTitle').html("转移" + tr.data('name') + "用户");
+        $('#changeOwnerModal').find("[name='uid']").val(tr.data('uid'));
+        $('#changeOwnerModal').modal({backdrop: 'static', keyboard: true}).css({});
+    });
+
+    //确认修改节点
+    $('#confirmChangeOwner').click(function () {
+        var form = $('#changeOwnerForm');
+        //询问框
+        layer.confirm("确定修改" + "<span class='text-danger'>" + form.find("[name='name']").val() + "</span>用户？", {
+            btn: ['确定', '取消'],
+            title: false
+        }, function () {
+            loading();
+            $.ajax({
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'json',
+                type: 'post',
+                success: function (data) {
+                    closeLodding();
+                    showMsgJump(data)
+                }
+            })
+        }, function () {
+
+        });
+
+    });
+
+    //删除项目
+    $('.delete').click(function () {
+        var tr = $(this).parent();
+        var id = tr.data('id');
+        var name = tr.data('name');
+        //询问框
+        layer.confirm("确定删除" + "项目：" + name + "？", {
+            btn: ['确定', '取消'],
+            title: false
+        }, function () {
+            loading();
+            $.ajax({
+                type: 'post',
+                data: {id: id},
+                dataType: 'json',
+                url: '/project/del',
+                success: function (data) {
+                    closeLodding();
+                    showMsgJump(data)
+                }
+            })
+        }, function () {
+
+        });
+    })
+
+
+    //8秒刷新一次列表，更新上线状态
+    $(function () {
+        setInterval(function () {
+            location.reload()
+        }, 8 * 1000);
+
+    });
+</script>

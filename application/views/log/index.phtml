@@ -1,0 +1,114 @@
+<!-- MAIN CONTENT -->
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">
+            <div class="text-left col-md-6">操作日志</div>
+        </h3>
+        <hr>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- TABLE HOVER -->
+                <div class="panel">
+
+                    <div class="page-body">
+                        <form class="navbar-form" id="searchForm">
+                            <div class="input-group">
+                                <input type="text" value="<?= $search['project_name'] ?>" class="form-control"
+                                       name="project_name"
+                                       placeholder="项目名称">
+                            </div>
+                            <div class="input-group">
+                                <select class="form-control" name="type">
+                                    <option value="">选择日志类型</option>
+                                    <?php foreach ($logTypes as $key => $cn): ?>
+                                        <option value="<?= $key ?>" <?= $search['type'] == $key ? 'selected' : '' ?>><?= $cn ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <select class="form-control" name="uid">
+                                    <option value="">选择操作用户</option>
+                                    <?php foreach ($userList as $uid => $username): ?>
+                                        <option value="<?= $uid ?>" <?= $search['uid'] == $uid ? 'selected' : '' ?>><?= $username ?></option>
+                                    <?php endforeach ?>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-btn"><button type="submit" class="btn btn-sm btn-primary">搜索</button></span>
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-btn"><button type="reset" class="btn btn-sm btn-primary" id="reset">清空条件</button></span>
+                            </div>
+                        </form>
+                    </div>
+
+
+                    <div class="panel-body">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>操作用户</th>
+                                <th>项目</th>
+                                <th>操作类型</th>
+                                <th>日志参数</th>
+                                <th>操作时间</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <?php
+                            foreach ($pageList['list'] as $v):?>
+                                <tr
+                                        data-id="<?= $v['id'] ?>"
+                                        data-type="<?= $v['type'] ?>"
+                                >
+                                    <td><?= $v['id'] ?></td>
+                                    <td><?= $v['username'] ?></td>
+                                    <td><?= \Myaf\Utils\Arrays::get($projects, "{$v['pid']}.project_name", '') ?></td>
+                                    <td><?= \Con\Log::getTypeCn($v['type']) ?></td>
+                                    <td>
+                                        <?php if ($v['params'] != '[]'): ?>
+                                            <button type="button" class="btn  btn-sm  btn-primary params">查看
+                                            </button>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?= $v['create_time'] ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- 分页  -->
+                    <div class="panel-body navbar-right"><?= $pageList['pageStr'] ?></div>
+                </div>
+                <!-- END TABLE HOVER -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
+</div>
+
+<script>
+    $('.params').click(function () {
+        var tr = $(this).parent().parent();
+        var type = tr.data('type');
+        var id = tr.data('id');
+        //示范一个公告层
+        layer.open({
+            type: 2,
+            content: '/log/content?id=' + id
+            , title: false //不显示标题栏
+            , closeBtn: false
+            , area: ['1008px', '680px']
+            , shade: 0.8
+            , id: 'LAY_layuipro' //设定一个id，防止重复弹出
+            , btn: ['确定']
+            , btnAlign: 'c'
+            , moveType: 1 //拖拽模式，0或者1
+            , success: function (layero) {
+            },
+        });
+    })
+
+</script>

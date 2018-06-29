@@ -1,0 +1,265 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <h3 class="page-title">
+            <div class="text-left col-md-6">项目详情</div>
+        </h3>
+        <hr>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">环境相关</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">部署环境:</label>
+                                <div class="col-sm-11">
+                                    <select class="form-control" name="env_id" disabled>
+                                        <?php foreach ($envList as $envId => $envName): ?>
+                                            <option value="<?= $envId ?>" <?= $project['env_id'] == $envId ? 'selected' : '' ?>><?= $envName ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h2 class="panel-title">部署用途</h2>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">用途选择:</label>
+                                <div class="col-sm-11">
+                                    <select class="form-control" name="project_use" id="project_use" disabled>
+                                        <?php foreach ($useList as $key => $value): ?>
+                                            <option value="<?= $key ?>" <?= $project['project_use'] == $value ? 'selected' : '' ?>> <?= $value ?></option>
+                                        <?php endforeach ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel" id="panel-project">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">项目相关</h3>
+                        </div>
+                        <?php if (\Auth\Auth::isAdmin()): ?>
+                            <div class="panel-body">
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label">所属用户:</label>
+                                    <div class="col-sm-11">
+                                        <select multiple style="height: 500px;font-size: 23px;" class="form-control" name="uids[]" disabled
+                                                id="uid">
+                                            <?php foreach ($userList as $uid => $username): ?>
+                                                <option value="<?= $uid ?>" <?= is_array($projectUids) && in_array($uid, $projectUids) ? 'selected' : '' ?>><?= $username ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endif ?>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目名称:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="必须为英文且全网唯一" disabled
+                                           name="project_name"
+                                           value="<?= $project['project_name']?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目描述:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="不超过10个字符" name="project_desc" disabled
+                                           value="<?=$project['project_desc']?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">主项目地址:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="gitlab项目地址,如:xxx.git" disabled
+                                           name="project_main_address"
+                                           value="<?= $project['project_main_address'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">主项目分支:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="" disabled
+                                           name="project_main_branch"
+                                           value="<?= $project['project_main_branch'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">次项目地址:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="" disabled
+                                           name="project_sub_address" value="<?= $project['project_sub_address'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">次项目分支:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="" disabled
+                                           name="project_sub_branch"
+                                           value="<?= $project['project_sub_branch'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">次项目目录:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="" disabled
+                                           name="project_sub_path"
+                                           value="<?= $project['project_sub_path'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class=" form-group">
+                                <label class="col-sm-1 control-label">节点数量:</label>
+                                <div class="col-sm-11">
+                                    <select class="form-control" name="batch_size" disabled>
+                                        <option value="1" <?= $project['batch_size'] == '1' ? 'selected' : '' ?>>1
+                                        </option>
+                                        <option value="2" <?= $project['batch_size'] == '2' ? 'selected' : '' ?>>2
+                                        </option>
+                                        <option value="3" <?= $project['batch_size'] == '3' ? 'selected' : '' ?>>3
+                                        </option>
+                                        <option value="4" <?= $project['batch_size'] == '4' ? 'selected' : '' ?>>4
+                                        </option>
+                                        <option value="5" <?= $project['batch_size'] == '5' ? 'selected' : '' ?>>5
+                                        </option>
+                                    </select>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">钉钉机器人:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="" name="ding" disabled
+                                           value="<?= $project['ding']?>">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel" id="panel-web">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">web相关</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">相关域名:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="" name="domain" disabled
+                                           id="input-domain" value="<?= $project['domain']?>">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">二级目录:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" placeholder="" name="domain_second_path" disabled
+                                           id="input-second-path" value="<?= $project['domain_second_path'] ?>">
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">集成配置相关(重要)&nbsp;&nbsp;
+                            </h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目地址:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="project_ci_address" disabled
+                                           value="<?= $project['project_ci_address'] ?>"
+                                           placeholder="">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目分支:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="project_ci_branch" disabled
+                                           value="<?= $project['project_ci_branch'] ?>"
+                                           placeholder="">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">项目目录:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="project_ci_path" disabled
+                                           value="<?= $project['project_ci_path'] ?>"
+                                           placeholder="">
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">集成脚本:</label>
+                                <div class="col-sm-11">
+                                <textarea style="height: 150px;" class="form-control" name="ci_run" disabled
+                                          placeholder=""><?= $project['ci_run'] ?></textarea>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">Dockerfile:</label>
+                                <div class="col-sm-11">
+                                    <textarea style="height: 150px;" class="form-control" name="ci_dockerfile" disabled><?=$project['ci_dockerfile']?></textarea>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">入口脚本:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="ci_run_file" disabled
+                                           placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">资源控制</h3>
+                        </div>
+                        <div class="panel-body">
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">节点标签:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="node_label"
+                                           value="<?= $project['node_label'] ?>"
+                                           placeholder="如:eoffcn.nodes或eoffcn.jobs" disabled>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-1 control-label">内存限制:</label>
+                                <div class="col-sm-11">
+                                    <input class="form-control" type="text" name="node_memory"
+                                           value="<?= $project['node_memory'] ?>"
+                                           placeholder="单位字节" disabled>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+<!-- END MAIN CONTENT -->
