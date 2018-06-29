@@ -49,5 +49,5 @@ RUN echo "setup composer..." >> /cli.log && \
     mv composer.phar /usr/local/bin/composer && \
     echo "composer install..." >> /cli.log && \
     composer install && \
-    echo "php ${APP_PATH}/bin/cli console/listen/index >> /cli.log &" >> /extra/external.sh &&
+    echo "php ${APP_PATH}/bin/cli console/listen/index >> /cli.log &" >> /extra/external.sh && \
     echo "init success" >> /cli.log
