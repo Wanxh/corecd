@@ -1,4 +1,4 @@
-#基于我们自营的非常牛逼的alpine3.7+nginx+php7.2.4-fpm
+#基于alpine3.7+nginx+php7.2.4-fpm
 FROM lin2798003/anp:stable
 
 ENV APP_PATH /var/www/html
@@ -16,7 +16,7 @@ ENV MYSQL_PREFIX c_
 ENV REDIS_HOST 127.0.0.1
 ENV REDIS_PORT 6379
 ENV REDIS_DATABASE 0
-ENV REDIS_PASSWORD
+ENV REDIS_PASSWORD xx
 
 #将所有代码复制到镜像的/var/www/html
 COPY . ${APP_PATH}
