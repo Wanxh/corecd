@@ -22,28 +22,28 @@ ENV REDIS_PASSWORD xx
 COPY . ${APP_PATH}
 
 #整合配置文件
-RUN echo "
-;mysql单主配置
-mysql.default.type = "mysql"
-mysql.default.host = "${MYSQL_HOST}"
-mysql.default.port = ${MYSQL_PORT}
-mysql.default.database = "${MYSQL_DATABASE}"
-mysql.default.username = "${MYSQL_USERNAME}"
-mysql.default.password = "${MYSQL_PASSWORD}"
-mysql.default.prefix = "${MYSQL_PREFIX}"
-mysql.default.charset = "utf8"
-;redis config
-redis.default.host = "${REDIS_HOST}"
-redis.default.port = ${MYSQL_PORT}
-redis.default.database = 0
-redis.default.password = "${REDIS_PASSWORD}"
-redis.default.timeout = 2
-;redis session
-redis.session.host = "${REDIS_HOST}"
-redis.session.port = ${MYSQL_PORT}
-redis.session.database = 0
-redis.session.password = "${REDIS_PASSWORD}"
-redis.session.timeout = 2
+RUN echo " \
+;mysql单主配置 \
+mysql.default.type = "mysql" \
+mysql.default.host = "${MYSQL_HOST}" \
+mysql.default.port = ${MYSQL_PORT}\
+mysql.default.database = "${MYSQL_DATABASE}"\
+mysql.default.username = "${MYSQL_USERNAME}"\
+mysql.default.password = "${MYSQL_PASSWORD}"\
+mysql.default.prefix = "${MYSQL_PREFIX}"\
+mysql.default.charset = "utf8"\
+;redis config\
+redis.default.host = "${REDIS_HOST}"\
+redis.default.port = ${MYSQL_PORT}\
+redis.default.database = 0\
+redis.default.password = "${REDIS_PASSWORD}"\
+redis.default.timeout = 2\
+;redis session\
+redis.session.host = "${REDIS_HOST}"\
+redis.session.port = ${MYSQL_PORT}\
+redis.session.database = 0\
+redis.session.password = "${REDIS_PASSWORD}"\
+redis.session.timeout = 2\
     " >> ${APP_PATH}/conf/application.ini
 
 #安装composer
