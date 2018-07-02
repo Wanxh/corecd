@@ -18,6 +18,9 @@ ENV REDIS_PORT 6379
 ENV REDIS_DATABASE 0
 ENV REDIS_PASSWORD xx
 
+#tailf log file
+ENV LOG_FILE /cli.log
+
 #将所有代码复制到镜像的/var/www/html
 COPY . ${APP_PATH}
 
@@ -44,10 +47,10 @@ RUN echo "mysql.default.type = \"mysql\"" >> ${APP_PATH}/conf/application.ini &&
 #安装composer
 #将初始化脚本加入到/extra/external.sh中
 #/extra/external.sh会在CMD中自动执行
-RUN echo "setup composer..." >> /cli.log && \
+RUN echo "setup composer..." >> ${LOG_FILE} && \
     curl -sS https://getcomposer.org/installer | php && \
     mv composer.phar /usr/local/bin/composer && \
-    echo "composer install..." >> /cli.log && \
+    echo "composer install..." >> ${LOG_FILE} && \
     composer install && \
-    echo "php ${APP_PATH}/bin/cli console/listen/index >> /cli.log &" >> /extra/external.sh && \
-    echo "init success" >> /cli.log
+    echo "php ${APP_PATH}/bin/cli console/listen/index >> ${LOG_FILE} &" >> /extra/external.sh && \
+    echo "init success" >> ${LOG_FILE}
