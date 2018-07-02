@@ -7,6 +7,7 @@ rancher+jenkins+cicd 自动集成自动部署
 ### docker run
 ```shell
 docker run -d -it --restart=always \
+    -p 8080:80 \
     -e MYSQL_HOST=localhost \
     -e MYSQL_PORT=3306 \
     -e MYSQL_USERNAME=root \
@@ -15,7 +16,7 @@ docker run -d -it --restart=always \
     -e REDIS_PORT=6379 \
     -e REDIS_PASSWORD=XX \
     --name corecd \
-    lin2798003/corecd:try
+    lin2798003/corecd:latest
 ```
 参数详解:
 * MYSQL_HOST:远程mysql连接地址
