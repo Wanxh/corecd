@@ -1,16 +1,16 @@
+#!/usr/bin/env php
+
 <?php
 
 //APP_PATH: yaf root dir
 //APP_CONFIG: yaf framework config file
 //APP_MODE: env mode type ,such as production/develop
-use Yaf\Application;
 
-define('APP_MODE_PRODUCTION', 'production');
-define('APP_MODE_DEVELOP', 'develop');
+use Yaf\Application;
 
 define('APP_PATH', __DIR__ . '/..');
 define('APP_CONFIG', APP_PATH . '/conf/application.ini');
-define('APP_MODE', isset($_SERVER['APP_MODE']) ? $_SERVER['APP_MODE'] : APP_MODE_DEVELOP);
+define('APP_MODE', 'develop');
 
 defined('FRAMEWORK_ERR_NOTFOUND_MODULE') or define('FRAMEWORK_ERR_NOTFOUND_MODULE', 515);
 defined('FRAMEWORK_ERR_NOTFOUND_CONTROLLER') or define('FRAMEWORK_ERR_NOTFOUND_CONTROLLER', 516);
