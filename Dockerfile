@@ -1,5 +1,5 @@
 #基于alpine3.7+nginx+php7.2.4-fpm
-FROM lin2798003/anp:stable
+FROM lin2798003/anp:latest
 
 ENV APP_PATH /var/www/html
 ENV APP_PATH_INDEX /var/www/html/public
