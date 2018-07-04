@@ -62,8 +62,8 @@ class ConfigModel
             'role' => Role::USER_ADMIN
         ])
         ) {
-            G::shutdown("初始化管理员账户失败");
+            G::shutdown("初始化管理员账户失败\n");
         }
-        G::json(['url' => $url], "管理员Google Auth URL创建成功");
+        echo G::json(['url' => $url], "管理员Google Auth URL创建成功") . "\n";
     }
 }
