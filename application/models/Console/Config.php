@@ -37,10 +37,10 @@ class ConfigModel
     {
         $sql = APP_PATH . '/devops/create.sql';
         if (!$sql = FileUtil::read($sql)) {
-            G::shutdown("未找到初始化的create.sql文件");
+            G::shutdown("未找到初始化的create.sql文件\n");
         }
         if (!Data::db()->exec($sql)) {
-            G::shutdown("初始化表结构失败");
+            G::shutdown("初始化表结构失败\n");
         }
     }
 

@@ -1,6 +1,3 @@
-#创建数据库
-CREATE DATABASE IF NOT EXISTS `corecd` default character set utf8 collate utf8_general_ci;
-
 USE corecd;
 
 #配置表
@@ -106,7 +103,7 @@ CREATE TABLE IF NOT EXISTS `c_log` (
   `pid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '项目id',
   `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
   `username` varchar(50) NOT NULL DEFAULT '' COMMENT '用户名',
-  `params` json DEFAULT NULL COMMENT '参数',
+  `params` text DEFAULT NULL COMMENT '参数',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
   PRIMARY KEY (`id`),
   KEY `type` (`type`)
