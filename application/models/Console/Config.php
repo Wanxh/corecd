@@ -40,7 +40,8 @@ class ConfigModel
             G::shutdown("未找到初始化的create.sql文件\n");
         }
         if (!Data::db()->exec($sql)) {
-            G::shutdown("初始化表结构失败\n");
+            $err = Data::db()->lastError();
+            G::shutdown("初始化表结构失败\n{$err}\n");
         }
     }
 
